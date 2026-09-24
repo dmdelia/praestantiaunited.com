@@ -89,6 +89,12 @@ async function renderHome() {
 async function renderArticle() {
   const root = qs("#article"); if (!root) return;
 
+  const storedRoute = sessionStorage.getItem("praestantia_news_route");
+  if (storedRoute) {
+    sessionStorage.removeItem("praestantia_news_route");
+    history.replaceState(null, "", storedRoute);
+  }
+
   const parts = location.pathname.split("/").filter(Boolean);
   const previewIndex = parts.indexOf("preview");
   const isPreview = parts[0] === "news" && previewIndex === 1;
