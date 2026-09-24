@@ -89,18 +89,26 @@ async function renderHome() {
 async function renderArticle() {
   const root = qs("#article"); if (!root) return;
 
-  const storedRoute = sessionStorage.getItem("praestantia_news_route");
-  if (storedRoute) {
-    sessionStorage.removeItem("praestantia_news_route");
-    history.replaceState(null, "", storedRoute);
-  }
+  const params = new URLSearchParams(location.search);
+  const queryPreview = params.get("preview");
+  const querySlug = params.get("slug");
 
   const parts = location.pathname.split("/").filter(Boolean);
-  const previewIndex = parts.indexOf("preview");
-  const isPreview = parts[0] === "news" && previewIndex === 1;
-  const prettySlug = isPreview ? parts[2] : (parts[0] === "news" ? parts[1] : "");
-  const legacySlug = new URLSearchParams(location.search).get("slug");
-  const slug = prettySlug || legacySlug;
+  const pathPreview = parts[0] === "news" && parts[1] === "preview";
+  const pathSlug = pathPreview ? parts[2] : (parts[0] === "news" ? parts[1] : "");
+
+  const isPreview = Boolean(queryPreview) || pathPreview;
+  const slug = queryPreview || querySlug || pathSlug;
+
+  if (slug) {
+    const cleanPath = isPreview
+      ? "/news/preview/" + encodeURIComponent(slug)
+      : "/news/" + encodeURIComponent(slug);
+
+    if (location.pathname !== cleanPath) {
+      history.replaceState(null, "", cleanPath);
+    }
+  }
 
   if (!slug) { root.innerHTML='<div class="error-state">No article selected.</div>'; return; }
 
