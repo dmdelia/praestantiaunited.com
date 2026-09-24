@@ -3,37 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="PRAESTANTIA UNITED editorial">
-  <meta name="robots" content="index,follow">
-  <title>Editorial — PRAESTANTIA UNITED</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css_style.css">
+  <title>Routing — PRAESTANTIA UNITED</title>
+  <meta name="robots" content="noindex">
 </head>
-<body data-page="article">
-<header class="site-header">
-  <a class="brand" href="/">PRAESTANTIA <span>UNITED</span></a>
-  <button class="nav-toggle" aria-label="Toggle navigation">MENU</button>
-  <nav class="site-nav">
-    <a href="/">NEWSROOM</a>
-    <a href="/pantheon.html">PANTHEON</a>
-    <a href="/matchday.html">MATCHDAY</a>
-    <a href="/recruitment.html">RECRUITMENT</a>
-    <a href="/partners.html">PARTNERS</a>
-  </nav>
-</header>
-<main><article id="article" class="article"><div class="loading-state">Loading editorial…</div></article></main>
-<footer class="site-footer"><span>PRAESTANTIA UNITED</span><span>FIDELITAS &amp; TACTICAL DISCIPLINE</span><a href="/">RETURN</a></footer>
+<body>
 <script>
-  const p = location.pathname.split("/").filter(Boolean);
-  const validReleased = p.length === 2 && p[0] === "news";
-  const validPreview = p.length === 3 && p[0] === "news" && p[1] === "preview";
-  if (!validReleased && !validPreview) {
-    document.body.dataset.page = "";
-    document.querySelector("main").innerHTML = '<section class="page-hero"><p class="eyebrow">404</p><h1>NOT FOUND</h1><p>The requested PRAESTANTIA resource does not exist.</p></section>';
-  }
+  (function () {
+    var path = location.pathname;
+    var validReleased = /^\/news\/[^/]+\/?$/.test(path);
+    var validPreview = /^\/news\/preview\/[^/]+\/?$/.test(path);
+
+    if (validReleased || validPreview) {
+      sessionStorage.setItem("praestantia_news_route", path + location.search + location.hash);
+      location.replace("/news_article.html");
+      return;
+    }
+
+    document.body.innerHTML = "<h1>404</h1><p>Resource not found.</p>";
+  })();
 </script>
-<script src="/js_app.js"></script>
 </body>
 </html>
