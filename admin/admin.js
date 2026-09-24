@@ -4,6 +4,7 @@ const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmt=v=>v?new Date(v).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase():"—";
+let editingArticleId=null;
 
 async function adminApi(path,options={}){
   const headers={...(options.headers||{}),Authorization:"Bearer "+(sessionStorage.getItem(tokenKey)||"")};
@@ -86,8 +87,41 @@ function actions(html){return '<div class="hub-row-actions">'+html+'</div>';}
 
 async function loadNews(){
   const d=await adminApi("/api/admin/articles");
-  $("#articles-list").innerHTML=d.articles.length?d.articles.map(a=>'<div class="hub-row"><div><small>'+esc(a.category)+' / '+esc(a.status)+'</small><h4>'+esc(a.title)+'</h4><small>/news/'+esc(a.slug)+'</small></div>'+actions('<a href="'+(a.status==="published"?"/news/":"/news/preview/")+encodeURIComponent(a.slug)+'" target="_blank">'+(a.status==="published"?"OPEN":"PREVIEW")+'</a><button class="danger" data-delete-article="'+a.id+'">DELETE</button>')+'</div>').join(""):'<div class="empty-state">No articles.</div>';
+  $("#articles-list").innerHTML=d.articles.length?d.articles.map(a=>'<div class="hub-row"><div><small>'+esc(a.category)+' / '+esc(a.status)+'</small><h4>'+esc(a.title)+'</h4><small>/news/'+esc(a.slug)+'</small></div>'+actions('<button data-edit-article="'+a.id+'">EDIT</button><a href="'+(a.status==="published"?"/news/":"/news/preview/")+encodeURIComponent(a.slug)+'" target="_blank">'+(a.status==="published"?"OPEN":"PREVIEW")+'</a><button class="danger" data-delete-article="'+a.id+'">DELETE</button>')+'</div>').join(""):'<div class="empty-state">No articles.</div>';
 }
+function resetArticleEditor(){
+  editingArticleId=null;
+  $("#article-form").reset();
+  $("#article-category").value="EDITORIAL";
+  $("#article-slug").dataset.touched="";
+  $("#article-editor-title").textContent="Create article";
+  $("#article-editor-mode").textContent="NEW ENTRY";
+  $("#article-save-button").textContent="SAVE ARTICLE";
+  $("#article-cancel-edit").classList.add("hidden");
+  $("#article-form-status").textContent="";
+}
+
+async function editArticle(id){
+  const d=await adminApi("/api/admin/articles/"+id);
+  const a=d.article;
+  editingArticleId=a.id;
+  $("#article-title").value=a.title||"";
+  $("#article-slug").value=a.slug||"";
+  $("#article-slug").dataset.touched="1";
+  $("#article-category").value=a.category||"EDITORIAL";
+  $("#article-subheadline").value=a.subheadline||"";
+  $("#article-image").value=a.image_url||"";
+  $("#article-status").value=a.status||"draft";
+  $("#article-featured").checked=Number(a.is_featured)===1;
+  $("#article-content").value=a.content||"";
+  $("#article-editor-title").textContent="Edit article";
+  $("#article-editor-mode").textContent="EDITING #"+a.id+" / "+(a.status||"draft").toUpperCase();
+  $("#article-save-button").textContent="SAVE CHANGES";
+  $("#article-cancel-edit").classList.remove("hidden");
+  $("#article-form-status").textContent="";
+  $("#article-form").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
 async function loadPlayers(){
   const d=await publicApi("/api/players");
   $("#players-list").innerHTML=d.players.length?d.players.map(p=>'<div class="hub-row"><div><small>#'+esc(p.player_number??"—")+' / '+esc(p.position||"MEMBER")+'</small><h4>'+esc(p.name)+'</h4><small>'+esc(p.nationality||"")+'</small></div>'+actions('<button class="danger" data-delete-player="'+p.id+'">REMOVE</button>')+'</div>').join(""):'<div class="empty-state">No active players.</div>';
@@ -136,11 +170,22 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   $("#article-title").addEventListener("input",e=>{if(!$("#article-slug").dataset.touched)$("#article-slug").value=slugify(e.target.value);});
   $("#article-slug").addEventListener("input",()=>$("#article-slug").dataset.touched="1");
+  $("#article-cancel-edit").addEventListener("click",resetArticleEditor);
   $("#article-form").addEventListener("submit",async e=>{
     e.preventDefault();
     const body={title:$("#article-title").value.trim(),slug:$("#article-slug").value.trim(),category:$("#article-category").value.trim(),subheadline:$("#article-subheadline").value.trim(),image_url:$("#article-image").value.trim(),status:$("#article-status").value,is_featured:$("#article-featured").checked,content:$("#article-content").value};
     const st=$("#article-form-status");st.textContent="SAVING…";
-    try{await adminApi("/api/admin/articles",{method:"POST",body:JSON.stringify(body)});st.textContent="ARTICLE SAVED.";e.target.reset();$("#article-category").value="EDITORIAL";$("#article-slug").dataset.touched="";await Promise.all([loadNews(),loadDashboard()]);}catch(err){st.textContent="ERROR: "+err.message;}
+    try{
+      if(editingArticleId){
+        await adminApi("/api/admin/articles/"+editingArticleId,{method:"PUT",body:JSON.stringify(body)});
+        st.textContent="CHANGES SAVED.";
+      }else{
+        await adminApi("/api/admin/articles",{method:"POST",body:JSON.stringify(body)});
+        st.textContent="ARTICLE SAVED.";
+      }
+      resetArticleEditor();
+      await Promise.all([loadNews(),loadDashboard()]);
+    }catch(err){st.textContent="ERROR: "+err.message;}
   });
 
   $("#player-form").addEventListener("submit",async e=>{e.preventDefault();if(await submitJson(e.target,"/api/admin/players",b=>({...b,player_number:b.player_number?Number(b.player_number):null})))await Promise.all([loadPlayers(),loadDashboard()]);});
@@ -148,9 +193,10 @@ document.addEventListener("DOMContentLoaded",()=>{
   $("#partner-form").addEventListener("submit",async e=>{e.preventDefault();if(await submitJson(e.target,"/api/admin/partners",b=>({...b,sort_order:Number(b.sort_order||0)})))await Promise.all([loadPartners(),loadDashboard()]);});
 
   document.body.addEventListener("click",async e=>{
-    const a=e.target.dataset.deleteArticle,p=e.target.dataset.deletePlayer,m=e.target.dataset.deleteMatch,pt=e.target.dataset.deletePartner;
+    const edit=e.target.dataset.editArticle,a=e.target.dataset.deleteArticle,p=e.target.dataset.deletePlayer,m=e.target.dataset.deleteMatch,pt=e.target.dataset.deletePartner;
     try{
-      if(a&&confirm("Delete this article?")){await adminApi("/api/admin/articles/"+a,{method:"DELETE"});await Promise.all([loadNews(),loadDashboard()]);}
+      if(edit){await editArticle(edit);}
+      if(a&&confirm("Delete this article?")){await adminApi("/api/admin/articles/"+a,{method:"DELETE"});if(String(editingArticleId)===String(a))resetArticleEditor();await Promise.all([loadNews(),loadDashboard()]);}
       if(p&&confirm("Remove this player?")){await adminApi("/api/admin/players/"+p,{method:"DELETE"});await Promise.all([loadPlayers(),loadDashboard()]);}
       if(m&&confirm("Delete this match?")){await adminApi("/api/admin/matches/"+m,{method:"DELETE"});await Promise.all([loadMatches(),loadDashboard()]);}
       if(pt&&confirm("Remove this partner?")){await adminApi("/api/admin/partners/"+pt,{method:"DELETE"});await Promise.all([loadPartners(),loadDashboard()]);}
