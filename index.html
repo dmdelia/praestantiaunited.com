@@ -10,32 +10,71 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css_style.css">
 </head>
-<body>
+<body data-page="home">
   <header class="site-header">
     <a class="brand" href="index.html">PRAESTANTIA <span>UNITED</span></a>
-    <nav>
-      <a href="index.html">NEWS</a>
-      <a href="news_article.html">EDITORIAL</a>
-      <a href="admin_news-create.html">ADMIN</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">MENU</button>
+    <nav class="site-nav">
+      <a href="index.html">NEWSROOM</a>
+      <a href="pantheon.html">PANTHEON</a>
+      <a href="matchday.html">MATCHDAY</a>
+      <a href="recruitment.html">RECRUITMENT</a>
+      <a href="partners.html">PARTNERS</a>
     </nav>
   </header>
 
   <main>
-    <section id="hero" class="hero"></section>
-    <section class="section-head">
-      <p class="eyebrow">THE ARCHIVE</p>
-      <h2>Latest Editorials</h2>
+    <section class="masthead">
+      <div>
+        <p class="eyebrow">PRAESTANTIA UNITED / 2026—27</p>
+        <h1>FIDELITAS.<br><span>TACTICAL DISCIPLINE.</span></h1>
+        <p class="masthead-copy">A competitive collective built around preparation, consistency and controlled execution.</p>
+      </div>
+      <div class="masthead-mark">PU</div>
+    </section>
+
+    <section class="ticker" aria-label="Club status">
+      <span>SEASON 2026/27</span><span>GERMANY</span><span>EST. STANDARD: DISCIPLINE</span>
+    </section>
+
+    <section id="featured-news" class="feature-block">
+      <div class="loading-state">Loading latest editorial…</div>
+    </section>
+
+    <section class="split-section">
+      <div>
+        <p class="eyebrow">MATCHDAY</p>
+        <h2>Next assignment.</h2>
+      </div>
+      <div id="next-match" class="data-panel"><div class="empty-state">No scheduled match published.</div></div>
+    </section>
+
+    <section class="section-head compact">
+      <div>
+        <p class="eyebrow">THE ARCHIVE</p>
+        <h2>Latest Editorials</h2>
+      </div>
       <div id="filters" class="filters"></div>
     </section>
-    <section id="editorial-grid" class="editorial-grid"></section>
+    <section id="editorial-grid" class="editorial-grid"><div class="loading-state">Loading newsroom…</div></section>
+
+    <section class="split-section team-preview">
+      <div>
+        <p class="eyebrow">PANTHEON</p>
+        <h2>The squad.</h2>
+        <p class="muted-copy">Active members of PRAESTANTIA UNITED.</p>
+        <a class="text-link" href="pantheon.html">ENTER PANTHEON →</a>
+      </div>
+      <div id="player-preview" class="mini-roster"><div class="empty-state">Roster awaiting publication.</div></div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <span>PRAESTANTIA UNITED</span>
     <span>FIDELITAS &amp; TACTICAL DISCIPLINE</span>
+    <a href="admin_news-create.html">ADMIN</a>
   </footer>
 
-  <script src="data_news.js"></script>
   <script src="js_app.js"></script>
 </body>
 </html>

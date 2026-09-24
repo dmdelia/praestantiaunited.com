@@ -1,44 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Editorial — PRAESTANTIA UNITED</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css_style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Administration — PRAESTANTIA UNITED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css_style.css">
 </head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="index.html">PRAESTANTIA <span>UNITED</span></a>
-    <nav><a href="index.html">NEWS</a><a href="news_article.html">EDITORIAL</a><a href="admin_news-create.html">ADMIN</a></nav>
-  </header>
-  <main class="admin">
-    <div class="eyebrow">CONTENT EDITOR</div>
-    <h1>Create Editorial</h1>
-    <form id="editor-form">
-      <div class="form-row"><label>Title</label><input id="title" required></div>
-      <div class="form-row"><label>Category</label><input id="category" placeholder="Editorial" required></div>
-      <div class="form-row"><label>Subheadline</label><input id="subheadline" required></div>
-      <div class="form-row"><label>Image URL</label><input id="image" type="url"></div>
-      <div class="form-row"><label><input id="featured" type="checkbox" style="width:auto;margin-right:8px"> Featured</label></div>
-      <div class="form-row">
-        <label>Content</label>
-        <div class="toolbar">
-          <button type="button" data-wrap="**">Bold</button>
-          <button type="button" data-wrap="*">Italic</button>
-          <button type="button" data-prefix="# ">H1</button>
-          <button type="button" data-prefix="## ">H2</button>
-          <button type="button" data-prefix="> ">Quote</button>
-          <button type="button" data-prefix="- ">List</button>
-        </div>
-        <textarea id="content" required></textarea>
-      </div>
-      <button class="publish" type="submit">GENERATE JSON</button>
-    </form>
-    <pre id="output" style="white-space:pre-wrap;color:#aaa;margin-top:40px"></pre>
-  </main>
-  <script src="js_admin.js"></script>
+<body class="admin-shell">
+<header class="site-header"><a class="brand" href="index.html">PRAESTANTIA <span>UNITED</span></a><nav class="site-nav"><a href="index.html">PUBLIC SITE</a></nav></header>
+<main class="admin">
+<section id="admin-login" class="admin-login">
+<p class="eyebrow">RESTRICTED ACCESS</p><h1>Administration</h1>
+<p class="muted-copy">Enter the administration token for this session.</p>
+<label>Admin token<input id="admin-token" type="password" autocomplete="off"></label>
+<button id="admin-login-button" class="action-button">ENTER</button><p id="admin-login-status" class="form-status"></p>
+</section>
+
+<section id="admin-dashboard" class="hidden">
+<div class="admin-topline"><div><p class="eyebrow">COMMAND</p><h1>Dashboard</h1></div><button id="admin-logout" class="ghost-button">LOGOUT</button></div>
+<div id="admin-metrics" class="metrics-grid"></div>
+<div class="admin-grid">
+<form id="editor-form" class="form-panel">
+<p class="eyebrow">CREATE EDITORIAL</p><h2>Publish to newsroom.</h2>
+<label>Title<input id="title" required></label>
+<div class="two-col"><label>Slug<input id="slug" required></label><label>Category<input id="category" value="EDITORIAL" required></label></div>
+<label>Subheadline<input id="subheadline"></label>
+<label>Image URL<input id="image" type="url"></label>
+<div class="two-col"><label>Status<select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="check-label"><input id="featured" type="checkbox"> Featured</label></div>
+<label>Content<div class="toolbar"><button type="button" data-wrap="**">Bold</button><button type="button" data-wrap="*">Italic</button><button type="button" data-prefix="# ">H1</button><button type="button" data-prefix="## ">H2</button><button type="button" data-prefix="> ">Quote</button><button type="button" data-prefix="- ">List</button></div><textarea id="content" rows="14" required></textarea></label>
+<button class="action-button" type="submit">SAVE ARTICLE</button><p id="editor-status" class="form-status"></p>
+</form>
+<section class="form-panel"><p class="eyebrow">ARCHIVE CONTROL</p><h2>Articles.</h2><div id="admin-articles"><div class="loading-state">Loading…</div></div></section>
+</div>
+</section>
+</main>
+<script src="js_admin.js"></script>
 </body>
 </html>
