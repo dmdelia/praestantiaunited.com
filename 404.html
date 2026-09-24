@@ -8,19 +8,23 @@
 </head>
 <body>
 <script>
-  (function () {
-    var path = location.pathname;
-    var validReleased = /^\/news\/[^/]+\/?$/.test(path);
-    var validPreview = /^\/news\/preview\/[^/]+\/?$/.test(path);
+(function () {
+  var path = location.pathname.replace(/\/+$/, "");
+  var previewMatch = path.match(/^\/news\/preview\/([^/]+)$/);
+  var publicMatch = path.match(/^\/news\/([^/]+)$/);
 
-    if (validReleased || validPreview) {
-      sessionStorage.setItem("praestantia_news_route", path + location.search + location.hash);
-      location.replace("/news_article.html");
-      return;
-    }
+  if (previewMatch) {
+    location.replace("/news_article.html?preview=" + encodeURIComponent(decodeURIComponent(previewMatch[1])));
+    return;
+  }
 
-    document.body.innerHTML = "<h1>404</h1><p>Resource not found.</p>";
-  })();
+  if (publicMatch) {
+    location.replace("/news_article.html?slug=" + encodeURIComponent(decodeURIComponent(publicMatch[1])));
+    return;
+  }
+
+  document.body.innerHTML = "<h1>404</h1><p>Resource not found.</p>";
+})();
 </script>
 </body>
 </html>

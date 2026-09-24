@@ -22,15 +22,6 @@
 </header>
 <main><article id="article" class="article"><div class="loading-state">Loading editorial…</div></article></main>
 <footer class="site-footer"><span>PRAESTANTIA UNITED</span><span>FIDELITAS &amp; TACTICAL DISCIPLINE</span><a href="/">RETURN</a></footer>
-<script>
-  (function () {
-    const legacySlug = new URLSearchParams(location.search).get("slug");
-    if (legacySlug && !sessionStorage.getItem("praestantia_news_route")) {
-      const route = "/news/" + encodeURIComponent(legacySlug);
-      sessionStorage.setItem("praestantia_news_route", route);
-    }
-  })();
-</script>
 <script src="/js_app.js"></script>
 </body>
 </html>
