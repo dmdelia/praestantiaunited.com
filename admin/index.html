@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin Hub — PRAESTANTIA UNITED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css_style.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-hub-shell">
+  <section id="login-screen" class="hub-login">
+    <div class="hub-login-card">
+      <a class="brand" href="/">PRAESTANTIA <span>UNITED</span></a>
+      <div>
+        <p class="eyebrow">RESTRICTED CONTROL SYSTEM</p>
+        <h1>ADMIN HUB</h1>
+        <p class="muted-copy">Newsroom, Pantheon, Matchday, requests and partnerships from one command surface.</p>
+      </div>
+      <label>Administration token<input id="token-input" type="password" autocomplete="off"></label>
+      <button id="login-button" class="action-button">ENTER COMMAND</button>
+      <p id="login-status" class="form-status"></p>
+    </div>
+  </section>
+
+  <div id="hub" class="hub hidden">
+    <aside class="hub-sidebar">
+      <a class="brand" href="/">PRAESTANTIA <span>UNITED</span></a>
+      <div class="hub-command-label">ADMINISTRATION / 01</div>
+      <nav id="hub-nav">
+        <button class="hub-nav-item active" data-section="dashboard">OVERVIEW</button>
+        <button class="hub-nav-item" data-section="news">NEWSROOM</button>
+        <button class="hub-nav-item" data-section="players">PANTHEON</button>
+        <button class="hub-nav-item" data-section="matches">MATCHDAY</button>
+        <button class="hub-nav-item" data-section="applications">APPLICATIONS <span id="badge-applications"></span></button>
+        <button class="hub-nav-item" data-section="match-requests">MATCH REQUESTS <span id="badge-match-requests"></span></button>
+        <button class="hub-nav-item" data-section="partners">PARTNERS</button>
+        <button class="hub-nav-item" data-section="partnership-requests">PARTNERSHIP REQUESTS <span id="badge-partnerships"></span></button>
+        <button class="hub-nav-item" data-section="settings">SYSTEM</button>
+      </nav>
+      <div class="hub-sidebar-foot">
+        <a href="/" target="_blank">OPEN PUBLIC SITE ↗</a>
+        <button id="logout-button">LOGOUT</button>
+      </div>
+    </aside>
+
+    <main class="hub-main">
+      <header class="hub-topbar">
+        <div><p class="eyebrow" id="section-kicker">COMMAND</p><h2 id="section-title">Overview</h2></div>
+        <div class="hub-api-status"><span id="api-dot"></span><span id="api-label">API CHECK</span></div>
+      </header>
+
+      <section class="hub-section active" data-panel="dashboard">
+        <div id="metrics" class="hub-metrics"></div>
+        <div class="hub-grid two">
+          <article class="hub-panel"><p class="eyebrow">SYSTEM</p><h3>Production</h3><div id="system-status" class="hub-list"></div></article>
+          <article class="hub-panel"><p class="eyebrow">QUICK ACTIONS</p><h3>Command shortcuts</h3>
+            <div class="quick-actions">
+              <button data-go="news">CREATE EDITORIAL</button>
+              <button data-go="players">ADD PLAYER</button>
+              <button data-go="matches">ADD MATCH</button>
+              <button data-go="partners">ADD PARTNER</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="hub-section" data-panel="news">
+        <div class="hub-grid editor-layout">
+          <form id="article-form" class="hub-panel hub-form">
+            <p class="eyebrow">EDITORIAL CONTROL</p><h3>Create article</h3>
+            <label>Title<input id="article-title" required></label>
+            <div class="two-col"><label>Slug<input id="article-slug" required></label><label>Category<input id="article-category" value="EDITORIAL" required></label></div>
+            <label>Subheadline<input id="article-subheadline"></label>
+            <label>Image URL<input id="article-image" type="url"></label>
+            <div class="two-col"><label>Status<select id="article-status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="check-label"><input id="article-featured" type="checkbox"> Featured</label></div>
+            <label>Content<textarea id="article-content" rows="16" required></textarea></label>
+            <button class="action-button" type="submit">SAVE ARTICLE</button><p id="article-form-status" class="form-status"></p>
+          </form>
+          <article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">ARCHIVE</p><h3>Articles</h3></div><button class="hub-refresh" data-refresh="news">REFRESH</button></div><div id="articles-list" class="hub-list"></div></article>
+        </div>
+      </section>
+
+      <section class="hub-section" data-panel="players">
+        <div class="hub-grid editor-layout">
+          <form id="player-form" class="hub-panel hub-form">
+            <p class="eyebrow">PANTHEON CONTROL</p><h3>Add player</h3>
+            <div class="two-col"><label>Number<input name="player_number" type="number"></label><label>Position<input name="position"></label></div>
+            <label>Name<input name="name" required></label><label>Slug<input name="slug" required></label>
+            <div class="two-col"><label>Nationality<input name="nationality"></label><label>Joined<input name="joined_at" type="date"></label></div>
+            <label>Portrait URL<input name="portrait_url" type="url"></label>
+            <label>Bio<textarea name="bio" rows="6"></textarea></label>
+            <button class="action-button" type="submit">ADD TO PANTHEON</button><p class="form-status"></p>
+          </form>
+          <article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">ACTIVE ROSTER</p><h3>Players</h3></div><button class="hub-refresh" data-refresh="players">REFRESH</button></div><div id="players-list" class="hub-list"></div></article>
+        </div>
+      </section>
+
+      <section class="hub-section" data-panel="matches">
+        <div class="hub-grid editor-layout">
+          <form id="match-form" class="hub-panel hub-form">
+            <p class="eyebrow">MATCHDAY CONTROL</p><h3>Add fixture</h3>
+            <label>Opponent<input name="opponent" required></label>
+            <div class="two-col"><label>Competition<input name="competition"></label><label>Venue<input name="venue"></label></div>
+            <div class="two-col"><label>Date<input name="match_date" type="date" required></label><label>Kickoff<input name="kickoff_time" type="time"></label></div>
+            <label>Status<select name="status"><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
+            <div class="two-col"><label>Score for<input name="score_for" type="number"></label><label>Score against<input name="score_against" type="number"></label></div>
+            <label>Notes<textarea name="notes" rows="5"></textarea></label>
+            <button class="action-button" type="submit">SAVE MATCH</button><p class="form-status"></p>
+          </form>
+          <article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">COMPETITIVE RECORD</p><h3>Matches</h3></div><button class="hub-refresh" data-refresh="matches">REFRESH</button></div><div id="matches-admin-list" class="hub-list"></div></article>
+        </div>
+      </section>
+
+      <section class="hub-section" data-panel="applications"><article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">RECRUITMENT</p><h3>Applications</h3></div><button class="hub-refresh" data-refresh="applications">REFRESH</button></div><div id="applications-list" class="hub-list"></div></article></section>
+      <section class="hub-section" data-panel="match-requests"><article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">OPPOSITION</p><h3>Match requests</h3></div><button class="hub-refresh" data-refresh="match-requests">REFRESH</button></div><div id="match-requests-list" class="hub-list"></div></article></section>
+
+      <section class="hub-section" data-panel="partners">
+        <div class="hub-grid editor-layout">
+          <form id="partner-form" class="hub-panel hub-form">
+            <p class="eyebrow">PARTNER CONTROL</p><h3>Add partner</h3>
+            <label>Name<input name="name" required></label><label>Slug<input name="slug" required></label>
+            <div class="two-col"><label>Tier<input name="tier"></label><label>Sort order<input name="sort_order" type="number" value="0"></label></div>
+            <label>Website<input name="website_url" type="url"></label><label>Logo URL<input name="logo_url" type="url"></label>
+            <label>Description<textarea name="description" rows="6"></textarea></label>
+            <button class="action-button" type="submit">ADD PARTNER</button><p class="form-status"></p>
+          </form>
+          <article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">ALLIANCES</p><h3>Partners</h3></div><button class="hub-refresh" data-refresh="partners">REFRESH</button></div><div id="partners-admin-list" class="hub-list"></div></article>
+        </div>
+      </section>
+
+      <section class="hub-section" data-panel="partnership-requests"><article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">ALLIANCES</p><h3>Partnership requests</h3></div><button class="hub-refresh" data-refresh="partnership-requests">REFRESH</button></div><div id="partnership-requests-list" class="hub-list"></div></article></section>
+
+      <section class="hub-section" data-panel="settings">
+        <div class="hub-grid two">
+          <article class="hub-panel"><p class="eyebrow">PUBLIC SETTINGS</p><h3>Runtime configuration</h3><div id="settings-list" class="hub-list"></div></article>
+          <article class="hub-panel"><p class="eyebrow">API</p><h3>Production endpoint</h3><code>https://praestantia-api.dmdeliafr.workers.dev</code><p class="muted-copy">Administration secrets stay in Cloudflare and are never committed to this repository.</p></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
