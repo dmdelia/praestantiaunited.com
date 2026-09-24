@@ -33,7 +33,10 @@ async function refresh(){
   root.innerHTML=articles.articles.length?articles.articles.map(a=>`
     <article class="admin-article" data-id="${a.id}">
       <div><span class="eyebrow">${esc(a.category)} / ${esc(a.status)}</span><h3>${esc(a.title)}</h3><small>${esc(a.slug)}</small></div>
-      <button class="danger-button" data-delete="${a.id}">DELETE</button>
+      <div class="admin-actions">
+        <a class="ghost-button" href="${a.status==="published" ? "/news/"+encodeURIComponent(a.slug) : "/news/preview/"+encodeURIComponent(a.slug)}" target="_blank" rel="noopener">${a.status==="published" ? "OPEN" : "PREVIEW"}</a>
+        <button class="danger-button" data-delete="${a.id}">DELETE</button>
+      </div>
     </article>`).join(""):'<div class="empty-state">No articles yet.</div>';
 }
 

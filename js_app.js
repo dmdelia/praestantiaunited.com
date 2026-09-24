@@ -51,7 +51,7 @@ async function renderHome() {
     const news = newsData.articles || [];
     const featured = news.find(x => Number(x.is_featured) === 1) || news[0];
     featuredEl.innerHTML = featured ? `
-      <a class="feature-story" href="news_article.html?slug=${encodeURIComponent(featured.slug)}" ${featured.image_url ? `style="background-image:url('${escapeHtml(featured.image_url)}')"` : ""}>
+      <a class="feature-story" href="/news/${encodeURIComponent(featured.slug)}" ${featured.image_url ? `style="background-image:url('${escapeHtml(featured.image_url)}')"` : ""}>
         <div class="feature-overlay"><p class="eyebrow">${escapeHtml(featured.category)}</p><h2>${escapeHtml(featured.title)}</h2><p>${escapeHtml(featured.subheadline || "")}</p><span class="meta">${formatDate(featured.published_at || featured.created_at)}</span></div>
       </a>` : '<div class="empty-state large">The newsroom is ready. Publish the first article from Administration.</div>';
 
@@ -62,7 +62,7 @@ async function renderHome() {
     const draw = category => {
       const items = news.filter(n => (!featured || n.id !== featured.id) && (category==="ALL" || n.category===category));
       grid.innerHTML = items.length ? items.map(n=>`
-        <a class="card" href="news_article.html?slug=${encodeURIComponent(n.slug)}">
+        <a class="card" href="/news/${encodeURIComponent(n.slug)}">
           <div class="card-image" ${n.image_url?`style="background-image:url('${escapeHtml(n.image_url)}')"`:""}></div>
           <div class="card-content"><p class="eyebrow">${escapeHtml(n.category)}</p><h3>${escapeHtml(n.title)}</h3><p>${escapeHtml(n.subheadline||"")}</p><span class="meta">${formatDate(n.published_at||n.created_at)}</span></div>
         </a>`).join("") : '<div class="empty-state grid-empty">No additional editorials published.</div>';
@@ -88,12 +88,34 @@ async function renderHome() {
 
 async function renderArticle() {
   const root = qs("#article"); if (!root) return;
-  const slug = new URLSearchParams(location.search).get("slug");
+
+  const parts = location.pathname.split("/").filter(Boolean);
+  const previewIndex = parts.indexOf("preview");
+  const isPreview = parts[0] === "news" && previewIndex === 1;
+  const prettySlug = isPreview ? parts[2] : (parts[0] === "news" ? parts[1] : "");
+  const legacySlug = new URLSearchParams(location.search).get("slug");
+  const slug = prettySlug || legacySlug;
+
   if (!slug) { root.innerHTML='<div class="error-state">No article selected.</div>'; return; }
+
   try {
-    const {article:a} = await api("/api/news/"+encodeURIComponent(slug));
+    let data;
+
+    if (isPreview) {
+      const token = sessionStorage.getItem("praestantia_admin_token");
+      if (!token) throw new Error("Admin session required for draft preview.");
+
+      data = await api("/api/admin/articles/preview/"+encodeURIComponent(slug), {
+        headers: { Authorization: "Bearer "+token }
+      });
+    } else {
+      data = await api("/api/news/"+encodeURIComponent(slug));
+    }
+
+    const a = data.article;
     document.title = a.title+" — PRAESTANTIA UNITED";
     root.innerHTML = `
+      ${isPreview ? '<div class="preview-banner">DRAFT PREVIEW · NOT PUBLIC</div>' : ''}
       <div class="article-kicker"><p class="eyebrow">${escapeHtml(a.category)}</p><span class="meta">${formatDate(a.published_at||a.created_at)}</span></div>
       <h1>${escapeHtml(a.title)}</h1>
       <p class="lead">${escapeHtml(a.subheadline||"")}</p>
