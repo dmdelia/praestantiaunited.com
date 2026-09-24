@@ -71,14 +71,14 @@
       <section class="hub-section" data-panel="news">
         <div class="hub-grid editor-layout">
           <form id="article-form" class="hub-panel hub-form">
-            <p class="eyebrow">EDITORIAL CONTROL</p><h3>Create article</h3>
+            <p class="eyebrow">EDITORIAL CONTROL</p><h3 id="article-editor-title">Create article</h3><p id="article-editor-mode" class="editor-mode">NEW ENTRY</p>
             <label>Title<input id="article-title" required></label>
             <div class="two-col"><label>Slug<input id="article-slug" required></label><label>Category<input id="article-category" value="EDITORIAL" required></label></div>
             <label>Subheadline<input id="article-subheadline"></label>
             <label>Image URL<input id="article-image" type="url"></label>
             <div class="two-col"><label>Status<select id="article-status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="check-label"><input id="article-featured" type="checkbox"> Featured</label></div>
             <label>Content<textarea id="article-content" rows="16" required></textarea></label>
-            <button class="action-button" type="submit">SAVE ARTICLE</button><p id="article-form-status" class="form-status"></p>
+            <div class="editor-actions"><button id="article-save-button" class="action-button" type="submit">SAVE ARTICLE</button><button id="article-cancel-edit" class="hub-refresh hidden" type="button">CANCEL EDIT</button></div><p id="article-form-status" class="form-status"></p>
           </form>
           <article class="hub-panel"><div class="panel-head"><div><p class="eyebrow">ARCHIVE</p><h3>Articles</h3></div><button class="hub-refresh" data-refresh="news">REFRESH</button></div><div id="articles-list" class="hub-list"></div></article>
         </div>
