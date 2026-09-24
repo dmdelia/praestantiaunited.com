@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Editorial — PRAESTANTIA UNITED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css_style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">PRAESTANTIA <span>UNITED</span></a>
+    <nav><a href="index.html">NEWS</a><a href="news_article.html">EDITORIAL</a><a href="admin_news-create.html">ADMIN</a></nav>
+  </header>
+  <main class="admin">
+    <div class="eyebrow">CONTENT EDITOR</div>
+    <h1>Create Editorial</h1>
+    <form id="editor-form">
+      <div class="form-row"><label>Title</label><input id="title" required></div>
+      <div class="form-row"><label>Category</label><input id="category" placeholder="Editorial" required></div>
+      <div class="form-row"><label>Subheadline</label><input id="subheadline" required></div>
+      <div class="form-row"><label>Image URL</label><input id="image" type="url"></div>
+      <div class="form-row"><label><input id="featured" type="checkbox" style="width:auto;margin-right:8px"> Featured</label></div>
+      <div class="form-row">
+        <label>Content</label>
+        <div class="toolbar">
+          <button type="button" data-wrap="**">Bold</button>
+          <button type="button" data-wrap="*">Italic</button>
+          <button type="button" data-prefix="# ">H1</button>
+          <button type="button" data-prefix="## ">H2</button>
+          <button type="button" data-prefix="> ">Quote</button>
+          <button type="button" data-prefix="- ">List</button>
+        </div>
+        <textarea id="content" required></textarea>
+      </div>
+      <button class="publish" type="submit">GENERATE JSON</button>
+    </form>
+    <pre id="output" style="white-space:pre-wrap;color:#aaa;margin-top:40px"></pre>
+  </main>
+  <script src="js_admin.js"></script>
+</body>
+</html>
